@@ -222,7 +222,9 @@ export function CardsChat() {
               disabled={selectedUsers.length < 2}
               size="sm"
               onClick={() => {
+                toast.success(`Started chat with ${selectedUsers.length} users`)
                 setOpen(false)
+                setSelectedUsers([])
               }}
             >
               Continue
