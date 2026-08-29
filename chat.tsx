@@ -3,6 +3,7 @@
 import * as React from "react"
 import { ArrowUpIcon, CheckIcon, PlusIcon } from "lucide-react"
 
+import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
