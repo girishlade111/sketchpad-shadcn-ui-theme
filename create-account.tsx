@@ -1,11 +1,30 @@
 "use client"
 
+import * as React from "react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export function CardsCreateAccount() {
+  const [email, setEmail] = React.useState("")
+  const [password, setPassword] = React.useState("")
+  const [loading, setLoading] = React.useState(false)
+  const submit = async () => {
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      toast.error("Enter a valid email")
+      return
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters")
+      return
+    }
+    setLoading(true)
+    await new Promise((r) => setTimeout(r, 800))
+    toast.success(`Account created for ${email}`)
+    setLoading(false)
+  }
   return (
     <Card>
       <CardHeader>
@@ -14,7 +33,7 @@ export function CardsCreateAccount() {
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-6">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => toast.info("GitHub auth coming soon")}>
             <svg viewBox="0 0 438.549 438.549">
               <path
                 fill="currentColor"
