@@ -51,6 +51,15 @@ const roles = [
 ]
 
 export function CardsTeamMembers() {
+  const [members, setMembers] = React.useState(teamMembers)
+  const [openPop, setOpenPop] = React.useState<string | null>(null)
+
+  const setRole = (email: string, role: string) => {
+    setMembers((prev) => prev.map((m) => (m.email === email ? { ...m, role } : m)))
+    toast.success(`Role updated to ${role}`)
+    setOpenPop(null)
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -58,7 +67,7 @@ export function CardsTeamMembers() {
         <CardDescription>Invite your team members to collaborate.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
-        {teamMembers.map((member) => (
+        {members.map((member) => (
           <div key={member.name} className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <Avatar className="border">
@@ -70,10 +79,10 @@ export function CardsTeamMembers() {
                 <p className="text-muted-foreground text-xs">{member.email}</p>
               </div>
             </div>
-            <Popover>
+            <Popover open={openPop === member.email} onOpenChange={(o) => setOpenPop(o ? member.email : null)}>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="ml-auto shadow-none bg-transparent">
-                  {member.role} <ChevronDown />
+                  {member.role} <ChevronDown className="size-3" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="p-0" align="end">
@@ -83,10 +92,10 @@ export function CardsTeamMembers() {
                     <CommandEmpty>No roles found.</CommandEmpty>
                     <CommandGroup>
                       {roles.map((role) => (
-                        <CommandItem key={role.name}>
+                        <CommandItem key={role.name} onSelect={() => setRole(member.email, role.name)}>
                           <div className="flex flex-col">
                             <p className="text-sm font-medium">{role.name}</p>
-                            <p className="text-muted-foreground">{role.description}</p>
+                            <p className="text-muted-foreground text-xs">{role.description}</p>
                           </div>
                         </CommandItem>
                       ))}
@@ -97,6 +106,9 @@ export function CardsTeamMembers() {
             </Popover>
           </div>
         ))}
+        <Button variant="outline" size="sm" className="w-full bg-transparent" onClick={() => toast.info("Invite dialog coming soon")}>
+          Invite Member
+        </Button>
       </CardContent>
     </Card>
   )
