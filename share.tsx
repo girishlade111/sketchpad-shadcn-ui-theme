@@ -34,6 +34,12 @@ const people = [
 ]
 
 export function CardsShare() {
+  const [link] = React.useState("http://example.com/link/to/document")
+  const [perms, setPerms] = React.useState<Record<string, string>>({})
+  const copy = async () => {
+    await navigator.clipboard.writeText(link)
+    toast.success("Link copied to clipboard")
+  }
   return (
     <Card>
       <CardHeader>
@@ -45,8 +51,8 @@ export function CardsShare() {
           <Label htmlFor="link" className="sr-only">
             Link
           </Label>
-          <Input id="link" value="http://example.com/link/to/document" className="h-8" readOnly />
-          <Button size="sm" variant="outline" className="shadow-none bg-transparent">
+          <Input id="link" value={link} className="h-8" readOnly />
+          <Button size="sm" variant="outline" className="shadow-none bg-transparent" onClick={copy}>
             Copy Link
           </Button>
         </div>
