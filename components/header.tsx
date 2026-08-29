@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Command, Search, Bell, Menu, LayoutDashboard, Sparkles } from "lucide-react"
+import { Search, Bell, LayoutDashboard } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,9 +34,9 @@ export function Header({ onCommandOpen }: { onCommandOpen?: () => void }) {
           </div>
           <nav className="hidden items-center gap-1 lg:flex">
             <Button variant="secondary" size="sm">Dashboard</Button>
-            <Button variant="ghost" size="sm">Projects</Button>
-            <Button variant="ghost" size="sm">Analytics</Button>
-            <Button variant="ghost" size="sm">Team</Button>
+            <Button variant="ghost" size="sm" onClick={() => toast.info("Projects coming soon")}>Projects</Button>
+            <Button variant="ghost" size="sm" onClick={() => toast.info("Analytics coming soon")}>Analytics</Button>
+            <Button variant="ghost" size="sm" onClick={() => toast.info("Team page coming soon")}>Team</Button>
           </nav>
         </div>
 
@@ -104,11 +105,11 @@ export function Header({ onCommandOpen }: { onCommandOpen?: () => void }) {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toast.info("Profile coming soon")}>Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toast.info("Settings coming soon")}>Settings</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toast.info("Billing coming soon")}>Billing</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Log out</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toast.success("Logged out")}>Log out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
