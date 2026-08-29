@@ -25,6 +25,25 @@ const plans = [
 ] as const
 
 export function CardsPaymentMethod() {
+  const [name, setName] = React.useState("")
+  const [plan, setPlan] = React.useState("starter")
+  const [number, setNumber] = React.useState("")
+  const [month, setMonth] = React.useState("")
+  const [year, setYear] = React.useState("")
+  const [cvc, setCvc] = React.useState("")
+  const [loading, setLoading] = React.useState(false)
+
+  const submit = async () => {
+    if (!name || !number || !month || !year || !cvc) {
+      toast.error("Please fill all payment fields")
+      return
+    }
+    setLoading(true)
+    await new Promise((r) => setTimeout(r, 700))
+    toast.success(`${plans.find((p) => p.id === plan)?.name} activated for ${name}`)
+    setLoading(false)
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -34,21 +53,21 @@ export function CardsPaymentMethod() {
       <CardContent className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <Label htmlFor="name">Name</Label>
-          <Input id="name" placeholder="First Last" />
+          <Input id="name" placeholder="First Last" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <fieldset className="flex flex-col gap-3">
           <legend className="text-sm font-medium">Plan</legend>
           <p className="text-muted-foreground text-sm">Select the plan that best fits your needs.</p>
-          <RadioGroup defaultValue="starter" className="grid gap-3">
-            {plans.map((plan) => (
+          <RadioGroup value={plan} onValueChange={setPlan} className="grid gap-3">
+            {plans.map((p) => (
               <Label
-                className="has-[[data-state=checked]]:border-ring has-[[data-state=checked]]:bg-primary/5 flex items-start gap-3 rounded-lg border p-3"
-                key={plan.id}
+                className="has-[[data-state=checked]]:border-ring has-[[data-state=checked]]:bg-primary/5 flex items-start gap-3 rounded-lg border p-3 cursor-pointer"
+                key={p.id}
               >
-                <RadioGroupItem value={plan.id} id={plan.name} className="data-[state=checked]:border-primary" />
+                <RadioGroupItem value={p.id} id={p.name} className="data-[state=checked]:border-primary" />
                 <div className="grid gap-1 font-normal">
-                  <div className="font-medium">{plan.name}</div>
-                  <div className="text-muted-foreground pr-2 text-xs leading-snug text-balance">{plan.description}</div>
+                  <div className="font-medium">{p.name}</div>
+                  <div className="text-muted-foreground pr-2 text-xs leading-snug text-balance">{p.description}</div>
                 </div>
               </Label>
             ))}
@@ -56,12 +75,12 @@ export function CardsPaymentMethod() {
         </fieldset>
         <div className="flex flex-col gap-3">
           <Label htmlFor="number">Card number</Label>
-          <Input id="number" placeholder="" />
+          <Input id="number" placeholder="1234 1234 1234 1234" value={number} onChange={(e) => setNumber(e.target.value)} />
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="flex flex-col gap-3">
             <Label htmlFor="month">Expires</Label>
-            <Select>
+            <Select value={month} onValueChange={setMonth}>
               <SelectTrigger id="month" aria-label="Month" className="w-full">
                 <SelectValue placeholder="Month" />
               </SelectTrigger>
@@ -83,7 +102,7 @@ export function CardsPaymentMethod() {
           </div>
           <div className="flex flex-col gap-3">
             <Label htmlFor="year">Year</Label>
-            <Select>
+            <Select value={year} onValueChange={setYear}>
               <SelectTrigger id="year" aria-label="Year" className="w-full">
                 <SelectValue placeholder="Year" />
               </SelectTrigger>
@@ -98,12 +117,12 @@ export function CardsPaymentMethod() {
           </div>
           <div className="flex flex-col gap-3">
             <Label htmlFor="cvc">CVC</Label>
-            <Input id="cvc" placeholder="CVC" />
+            <Input id="cvc" placeholder="CVC" value={cvc} onChange={(e) => setCvc(e.target.value)} />
           </div>
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Continue</Button>
+        <Button className="w-full" onClick={submit} disabled={loading}>{loading ? "Processing..." : "Continue"}</Button>
       </CardFooter>
     </Card>
   )
