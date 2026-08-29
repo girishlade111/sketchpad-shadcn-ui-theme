@@ -59,7 +59,17 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function CardsActivityGoal() {
-  const [goal, setGoal] = React.useState(350)
+  const [goal, setGoal] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      const s = localStorage.getItem("activity-goal")
+      return s ? Number(s) : 350
+    }
+    return 350
+  })
+
+  React.useEffect(() => {
+    localStorage.setItem("activity-goal", String(goal))
+  }, [goal])
 
   function onClick(adjustment: number) {
     setGoal(Math.max(200, Math.min(400, goal + adjustment)))
@@ -107,7 +117,7 @@ export function CardsActivityGoal() {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full" variant="secondary">
+        <Button className="w-full" variant="secondary" onClick={() => toast.success(`Goal set to ${goal} calories/day`)}>
           Set Goal
         </Button>
       </CardFooter>
