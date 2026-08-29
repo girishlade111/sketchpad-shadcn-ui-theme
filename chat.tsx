@@ -74,6 +74,21 @@ export function CardsChat() {
   ])
   const [input, setInput] = React.useState("")
   const inputLength = input.trim().length
+  const [isTyping, setIsTyping] = React.useState(false)
+  const listRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" })
+  }, [messages, isTyping])
+
+  const send = (text: string) => {
+    setMessages((m) => [...m, { role: "user", content: text }])
+    setIsTyping(true)
+    setTimeout(() => {
+      setIsTyping(false)
+      setMessages((m) => [...m, { role: "agent", content: "Thanks for your message! We'll get back shortly." }])
+    }, 1000)
+  }
 
   return (
     <>
@@ -107,7 +122,7 @@ export function CardsChat() {
           </TooltipProvider>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col gap-4">
+          <div ref={listRef} className="flex flex-col gap-4 max-h-[260px] overflow-y-auto pr-1">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -119,6 +134,7 @@ export function CardsChat() {
                 {message.content}
               </div>
             ))}
+            {isTyping && <div className="bg-muted w-max rounded-lg px-3 py-2 text-sm animate-pulse">Typing...</div>}
           </div>
         </CardContent>
         <CardFooter>
@@ -126,13 +142,7 @@ export function CardsChat() {
             onSubmit={(event) => {
               event.preventDefault()
               if (inputLength === 0) return
-              setMessages([
-                ...messages,
-                {
-                  role: "user",
-                  content: input,
-                },
-              ])
+              send(input)
               setInput("")
             }}
             className="relative w-full"
