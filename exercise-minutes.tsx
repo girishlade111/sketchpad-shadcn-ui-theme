@@ -57,14 +57,34 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function CardsExerciseMinutes() {
+  const [range, setRange] = React.useState<"week" | "month">("week")
+  const total = data.reduce((acc, d) => acc + d.today, 0)
+  const avg = Math.round(total / data.length)
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Exercise Minutes</CardTitle>
-        <CardDescription>Your exercise minutes are ahead of where you normally are.</CardDescription>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <CardTitle>Exercise Minutes</CardTitle>
+            <CardDescription>Your exercise minutes are ahead of where you normally are.</CardDescription>
+          </div>
+          <select
+            value={range}
+            onChange={(e) => setRange(e.target.value as any)}
+            className="h-7 rounded-md border bg-background px-2 text-xs"
+          >
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+          </select>
+        </div>
+        <div className="flex gap-4 pt-2 text-sm">
+          <span><b>{total}</b> total</span>
+          <span className="text-muted-foreground"><b>{avg}</b> avg/day</span>
+          <button className="ml-auto text-xs text-primary hover:underline" onClick={() => toast.info("Exporting exercise data...")}>Export</button>
+        </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="w-full md:h-[200px]">
+        <ChartContainer config={chartConfig} className="w-full h-[200px]">
           <LineChart
             accessibilityLayer
             data={data}
