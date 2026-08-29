@@ -5,7 +5,7 @@ import { Command, Search, Bell, Menu, LayoutDashboard, Sparkles } from "lucide-r
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ThemeToggle } from "@/components\theme-toggle"
+import { ThemeToggle } from "@/components/theme-toggle"
 import {
   DropdownMenu,
   DropdownMenuContent,
