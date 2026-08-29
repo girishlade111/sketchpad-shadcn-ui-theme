@@ -55,16 +55,30 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function CardsStats() {
+  const [period, setPeriod] = React.useState<"7d" | "30d" | "90d">("7d")
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
-          <CardTitle className="text-3xl">$15,231.89</CardTitle>
-          <CardDescription>+20.1% from last month</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardDescription>Total Revenue</CardDescription>
+              <CardTitle className="text-3xl">$15,231.89</CardTitle>
+              <CardDescription>+20.1% from last month</CardDescription>
+            </div>
+            <select
+              value={period}
+              onChange={(e) => setPeriod(e.target.value as any)}
+              className="h-7 rounded-md border bg-background px-2 text-xs"
+            >
+              <option value="7d">7d</option>
+              <option value="30d">30d</option>
+              <option value="90d">90d</option>
+            </select>
+          </div>
         </CardHeader>
         <CardContent className="pb-0">
-          <ChartContainer config={chartConfig} className="h-[80px] w-full">
+          <ChartContainer config={chartConfig} className="h-[90px] w-full">
             <LineChart
               data={data}
               margin={{
@@ -87,24 +101,26 @@ export function CardsStats() {
           </ChartContainer>
         </CardContent>
       </Card>
-      <Card className="pb-0 lg:hidden xl:flex">
+      <Card className="pb-0 lg:hidden xl:flex overflow-hidden">
         <CardHeader className="flex flex-row items-center">
           <div className="grid gap-2">
             <CardDescription>Subscriptions</CardDescription>
             <CardTitle className="text-3xl">+2,350</CardTitle>
             <CardDescription>+180.1% from last month</CardDescription>
           </div>
-          <Button variant="ghost" size="sm" className="ml-auto shadow-none">
+          <Button variant="ghost" size="sm" className="ml-auto shadow-none" onClick={() => toast.info("Detailed subscription analytics coming soon")}>
             View More
           </Button>
         </CardHeader>
-        <CardContent className="mt-auto max-h-[124px] flex-1 p-0">
-          <ChartContainer config={chartConfig} className="size-full">
+        <CardContent className="mt-auto flex-1 p-0 h-[124px]">
+          <ChartContainer config={chartConfig} className="h-[124px] w-full">
             <AreaChart
               data={data}
               margin={{
                 left: 0,
                 right: 0,
+                top: 0,
+                bottom: 0,
               }}
             >
               <Area
