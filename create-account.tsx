@@ -42,7 +42,7 @@ export function CardsCreateAccount() {
             </svg>
             GitHub
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => toast.info("Google auth coming soon")}>
             <svg role="img" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
@@ -62,15 +62,15 @@ export function CardsCreateAccount() {
         </div>
         <div className="flex flex-col gap-3">
           <Label htmlFor="email-create-account">Email</Label>
-          <Input id="email-create-account" type="email" placeholder="m@example.com" />
+          <Input id="email-create-account" type="email" placeholder="m@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className="flex flex-col gap-3">
           <Label htmlFor="password-create-account">Password</Label>
-          <Input id="password-create-account" type="password" />
+          <Input id="password-create-account" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Create account</Button>
+        <Button className="w-full" onClick={submit} disabled={loading}>{loading ? "Creating..." : "Create account"}</Button>
       </CardFooter>
     </Card>
   )
