@@ -72,7 +72,7 @@ export function CardsShare() {
                     <p className="text-muted-foreground text-sm">{person.email}</p>
                   </div>
                 </div>
-                <Select defaultValue="edit">
+                <Select value={perms[person.email] ?? "edit"} onValueChange={(v) => { setPerms({ ...perms, [person.email]: v }); toast.success(`${person.name} can now ${v}`) }}>
                   <SelectTrigger className="ml-auto pr-2" aria-label="Edit" size="sm">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
