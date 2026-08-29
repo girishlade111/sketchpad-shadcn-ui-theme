@@ -165,9 +165,23 @@ export function CardsPayments() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [payments, setPayments] = React.useState<Payment[]>(data)
+  const [search, setSearch] = React.useState("")
+  const [statusFilter, setStatusFilter] = React.useState<string>("all")
+  const [addOpen, setAddOpen] = React.useState(false)
+  const [newEmail, setNewEmail] = React.useState("")
+  const [newAmount, setNewAmount] = React.useState("")
+
+  const filteredData = React.useMemo(() => {
+    return payments.filter((p) => {
+      const matchesSearch = !search || p.email.toLowerCase().includes(search.toLowerCase()) || p.id.includes(search)
+      const matchesStatus = statusFilter === "all" || p.status === statusFilter
+      return matchesSearch && matchesStatus
+    })
+  }, [payments, search, statusFilter])
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -185,19 +199,63 @@ export function CardsPayments() {
     },
   })
 
+  const handleAdd = () => {
+    if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
+      toast.error("Enter a valid email")
+      return
+    }
+    const amount = Number(newAmount)
+    if (!amount || amount <= 0) {
+      toast.error("Enter a valid amount")
+      return
+    }
+    const newPayment: Payment = {
+      id: Math.random().toString(36).slice(2, 8),
+      email: newEmail,
+      amount,
+      status: "pending",
+    }
+    setPayments((prev) => [newPayment, ...prev])
+    toast.success(`Payment for ${newEmail} added`)
+    setNewEmail("")
+    setNewAmount("")
+    setAddOpen(false)
+  }
+
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center">
-        <div className="grid gap-2">
-          <CardTitle className="text-xl">Payments</CardTitle>
-          <CardDescription>Manage your payments.</CardDescription>
-        </div>
-        <Button variant="secondary" size="sm" className="ml-auto shadow-none">
-          Add Payment
-        </Button>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <div className="overflow-hidden rounded-md border">
+    <>
+      <Card>
+        <CardHeader className="flex flex-row items-center">
+          <div className="grid gap-2">
+            <CardTitle className="text-xl">Payments</CardTitle>
+            <CardDescription>Manage your payments.</CardDescription>
+          </div>
+          <Button variant="secondary" size="sm" className="ml-auto shadow-none" onClick={() => setAddOpen(true)}>
+            Add Payment
+          </Button>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Input placeholder="Search by email or ID..." value={search} onChange={(e) => setSearch(e.target.value)} className="h-8 max-w-sm" />
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="h-8 w-[140px]" size="sm">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All status</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="processing">Processing</SelectItem>
+                <SelectItem value="success">Success</SelectItem>
+                <SelectItem value="failed">Failed</SelectItem>
+              </SelectContent>
+            </Select>
+            {(search || statusFilter !== "all") && (
+              <Button variant="ghost" size="sm" onClick={() => { setSearch(""); setStatusFilter("all") }}>
+                Clear
+              </Button>
+            )}
+          </div>
+          <div className="overflow-hidden rounded-md border">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
